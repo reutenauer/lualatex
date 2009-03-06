@@ -1,0 +1,626 @@
+% \iffalse meta-comment
+%
+% Copyright (C) 2009 by Elie Roux <elie.roux@telecom-bretagne.eu>
+%
+% This work is under the CC0 license.
+%
+% This work consists of the main source file luamcallbacks.dtx
+% and the derived files
+%    luamcallbacks.sty, luamcallbacks.tex, luamcallbacks.lua
+%    luamcallbacks.drv, luamcallbacks-test.tex, luamcallbacks.pdf.
+%
+% Unpacking and documentation:
+%    pdflatex luamcallbacks.dtx
+%
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%<*ignore>
+\begingroup
+
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: luamcallbacks 2009/02/26 v0.9 LuaTeX multiple callbacks package}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\preamble
+This is a generated file.
+
+Copyright (C) 2009 by Elie Roux <elie.roux@telecom-bretagne.eu>
+
+This work is under the CC0 license.
+
+This work consists of the main source file luamcallbacks.dtx
+and the derived files
+  luamcallbacks.lua, luamcallbacks.drv, luamcallbacks-test.tex,
+  luamcallbacks.pdf.
+
+\endpreamble
+
+\generate{%
+  \file{luamcallbacks.drv}{\from{luamcallbacks.dtx}{driver}}%
+  \usedir{doc/luatex/luamcallbacks}%
+  \file{luamcallbacks-test.tex}{\from{luamcallbacks.dtx}{test}}%
+}
+
+% The following hacks are to generate a lua file with lua comments starting by -- instead of %%
+
+\def\MetaPrefix{-- }
+
+% we have to redefine the preamble to get the good comments.
+
+\preamble
+This is a generated file.
+
+Copyright (C) 2009 by Elie Roux <elie.roux@telecom-bretagne.eu>
+
+This work is under the CC0 license.
+
+This work consists of the main source file luamcallbacks.dtx
+and the derived files
+  luamcallbacks.lua luamcallbacks.drv, luamcallbacks-test.tex,
+  luamcallbacks.pdf.
+\endpreamble
+
+\def\luapostamble{%
+  \MetaPrefix^^J%
+  \MetaPrefix\space End of File `\outFileName'.%
+}
+
+\def\currentpostamble{\luapostamble}%
+
+\generate{%
+  \usedir{luatex/lua/luamcallbacks}%
+  \file{luamcallbacks.lua}{\from{luamcallbacks.dtx}{lua}}%
+}
+
+\obeyspaces
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* files into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     luamcallbacks.lua}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endgroup
+%</ignore>
+% \iffalse
+%<driver>
+%<driver>\NeedsTeXFormat{LaTeX2e}
+%<driver>\ProvidesPackage{luamcallbacks.sty}
+%<driver>  [2009/02/26 v0.9 LuaTeX multiple callbacks package]
+%<driver>
+% \fi
+%<*driver>
+\documentclass{ltxdoc}
+\EnableCrossrefs
+\CodelineIndex
+\begin{document}
+  \DocInput{luamcallbacks.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{5}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{luamcallbacks.drv}
+%
+% \title{The \textsf{luamcallbacks} package}
+% \date{2009/02/26 v0.9}
+% \author{Elie Roux \\ \texttt{elie.roux@telecom-bretagne.eu}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package manages the callback adding and removing, by adding \texttt{callback.add}
+% and \texttt{callback.remove}, and overwriting \texttt{callback.register}.
+% \end{abstract}
+%
+% \section{Documentation}
+%
+%Lua\TeX\ provides an extremely interesting feature, named callbacks. It allows to call some lua functions at some points of the \TeX\ algorithm (a \emph{callback}), like when \TeX\ breaks likes, puts vertical spaces, etc. The Lua\TeX\ core offers a function called \texttt{callback.register} that enables to register a function in a callback.
+%
+%The problem with \texttt{callback.register} is that is registers only one function in a callback. For a lot of callbacks it can be common to have several packages registering their function in a callback, and thus it is impossible with them to be compatible with each other.
+%
+%This package solves this problem by adding mainly one new function \texttt{callback.\\add} that adds a function in a callback. With this function it is possible for packages to register their function in a callback without overwriting the functions of the other packages.
+%
+%The functions are called in a certain order, and when a package registers a callback it can assign a priority to its function. Conflicts can still remain even with the priority mechanism, for example in the case where two packages want to have the highest priority. In these cases the packages have to solve the conflicts themselves.
+%
+% This package contains only a \texttt{.lua} file, that can be called by another lua script. For example, this script is called in \textsc{luatextra}.
+%
+%\subsubsection{Limitations}
+%
+%This package only works for callbacks where it's safe to add multiple functions without changing the functions' signatures. There are callbacks, though, where registering several functions is not possible without changing the function's signatures, like for example the readers callbacks. These callbacks take a filename and give the datas in it. One solution would be to change the functions' signature to open it when the function is the first, and to take the datas and modify them eventually if they are called after the first. But it seems rather fragile and useless, so it's not implemented. With these callbacks, in this package we simply execute the first function in the list.
+%
+%Another callback in this case is \texttt{define\_font}. In this callback though, the solution exposed before could be a useful solution. If you need to register several callbacks in a reader or the \texttt{define\_font} callback, please ask the maintainer.
+%
+% \StopEventually{
+% }
+%
+% \section{Package files}
+%
+% The package contains \texttt{luamcallbacks.lua} with the new functions, and an example of the use of luamcallbacks.
+%
+% \iffalse
+%<*lua>
+% \fi
+%
+% \subsection{\texttt{luamcallbacks.lua}}
+%
+% First the \texttt{luamcallbacks} module is registered as a Lua\TeX\ module, with some informations.
+%
+%    \begin{macrocode}
+
+luamcallbacks          = { }
+
+luamcallbacks.module = {
+    name          = "luamcallbacks",
+    version       = 0.9,
+    date          = "2009/03/06",
+    description   = "Module to register several functions in a callback.",
+    author        = "Hans Hagen & Elie Roux",
+    copyright     = "Hans Hagen & Elie Roux",
+    license       = "CC0",
+}
+
+luatextra.provides_module(luamcallbacks.module)
+
+%    \end{macrocode}
+%
+% \texttt{callbacklist} is the main list, that contains the callbacks as keys and a table of the registered functions a values.
+%
+%    \begin{macrocode}
+
+luamcallbacks.callbacklist = luamcallbacks.callbacklist or { }
+
+local format = string.format
+
+%    \end{macrocode}
+%
+% There are 4 types of callback:
+% \begin{itemize}
+% \item the ones taking a list of nodes and returning a boolean and eventually a new head (\texttt{list})
+% \item the ones taking datas and returning the modified ones (\texttt{data})
+% \item the ones that can't have multiple functions registered in them (\texttt{first})
+% \item the ones for functions that don't return anything (\texttt{simple})
+% \end{itemize}
+
+local list = 1
+local data = 2
+local first = 3
+local simple = 4
+
+% \texttt{callbacktypes} is the list that contains the callbacks as keys and the type (list or data) as values.
+%
+%    \begin{macrocode}
+
+luamcallbacks.callbacktypes = luamcallbacks.callbacktypes or {
+buildpage_filter = simple,
+token_filter = first,
+pre_output_filter = list,
+hpack_filter = list,
+process_input_buffer = data,
+mlist_to_hlist = list,
+vpack_filter = list,
+define_font = first,
+open_read_file = first,
+linebreak_filter = list,
+post_linebreak_filter = list,
+pre_linebreak_filter = list,
+start_page_number = simple,
+stop_page_number = simple,
+start_run = simple,
+show_error_hook = simple,
+stop_run = simple,
+hyphenate = simple,
+ligaturing = simple,
+kerning = data,
+find_write_file = first,
+find_read_file = first,
+find_vf_file = data,
+find_map_file = data,
+find_format_file = data,
+find_opentype_file = data,
+find_output_file = data,
+find_truetype_file = data,
+find_type1_file = data,
+find_data_file = data,
+find_pk_file = data,
+find_font_file = data,
+find_image_file = data,
+find_ocp_file = data,
+find_sfd_file = data,
+find_enc_file = data,
+read_sfd_file = first,
+read_map_file = first,
+read_pk_file = first,
+read_enc_file = first,
+read_vf_file = first,
+read_ocp_file = first,
+read_opentype_file = first,
+read_truetype_file = first,
+read_font_file = first,
+read_type1_file = first,
+read_data_file = first,
+}
+
+%    \end{macrocode}
+%
+% As we overwrite \texttt{callback.register}, we save it as \texttt{mcallbacks.internalregister}. After that we declare some functions to write the errors or the logs.
+%
+%    \begin{macrocode}
+
+luamcallbacks.internalregister = luamcallbacks.internalregister or callback.register
+
+local callbacktypes = luamcallbacks.callbacktypes
+
+luamcallbacks.log = luamcallbacks.log or function(...)
+  luatextra.module_log('luamcallbacks', format(...))
+end
+
+luamcallbacks.error = luamcallbacks.error or function(...)
+  luatextra.module_error('luamcallbacks', format(...))
+end
+
+%    \end{macrocode}
+%
+% \begin{macro}{luamcallbacks.add}
+%
+%The main function. The signature is \texttt{luamcallbacks.add (name, func, description, priority)} with \texttt{name} being the name of the callback in which the function is added; \texttt{func} is the added function; \texttt{description} is a small character string describing the function, and \texttt{priority} an optional argument describing the priority the function will have.
+%
+%The functions for a callbacks are added in a list (in \texttt{luamcallbacks.callbacklist\\.callbackname}). If they have no priority or a high priority number, they will be added at the end of the list, and will be called after the others. If they have a low priority number, the will be added at the beginning of the list and will be called before the others.
+%
+%Something that must be made clear, is that there is absolutely no solution for packages conflicts: if two packages want the top priority on a certain callback, they will have to decide the priority they will give to their function themself. Most of the time, the priority is not needed.
+%
+%    \begin{macrocode}
+
+function luamcallbacks.add (name,func,description,priority)
+    if type(func) ~= "function" then
+        luamcallbacks.error("unable to add function, no proper function passed")
+        return
+    end
+    if not name or name == "" then
+        luamcallbacks.error("unable to add function, no proper callback name passed")
+        return
+    elseif not callbacktypes[name] then
+        luamcallbacks.error(
+          format("unable to add function, '%s' is not a valid callback", 
+          name))
+        return
+    end
+    
+    if not description or description == "" then
+        luamcallbacks.error(
+          format("unable to add function to '%s', no proper description passed",
+          name))
+        return
+    end
+    local l = luamcallbacks.callbacklist[name]
+    if not l then
+        l = { }
+        luamcallbacks.callbacklist[name] = l
+        if callbacktypes[name] == list then
+            luamcallbacks.internalregister(name, luamcallbacks.listhandler(name))
+        elseif callbacktypes[name] == data then
+            luamcallbacks.internalregister(name, luamcallbacks.datahandler(name))
+        elseif callbacktypes[name] == simple then
+            luamcallbacks.internalregister(name, luamcallbacks.simplehandler(name))
+        elseif callbacktypes[name] == first then
+            luamcallbacks.internalregister(name, luamcallbacks.firsthandler(name))
+        else
+            luamcallbacks.error("unknown callback type")
+        end
+        luamcallbacks.log(format("creating callback list for '%s'",name))
+    end
+    local f = {
+        func = func,
+        description = description,
+    }
+    priority = tonumber(priority)
+    if not priority or priority > #l then
+        priority = #l+1
+    elseif priority < 1 then
+        priority = 1
+    end
+    if callbacktypes[name] == first and (priority ~= 1 or l ~= {}) then
+        luamcallbacks.error(format("several callbacks registered in callback '%s', only the first function will be active.", name))
+    end
+    table.insert(l,priority,f)
+    luamcallbacks.log(
+      format("inserting function '%s' at position %s in callback list for '%s'",
+      description,priority,name))
+end
+
+%    \end{macrocode}
+%
+% \end{macro}
+%
+% \begin{macro}{luamcallbacks.remove}
+%
+% The function that removes a function from a callback. The signature is \texttt{mcallbacks.remove (name, description)} with \texttt{name} being the name of callbacks, and description the description passed to \texttt{mcallbacks.add}.
+%
+%    \begin{macrocode}
+
+function luamcallbacks.remove (name, description)
+    if not name or name == "" then
+        luamcallbacks.error("unable to remove function, no proper callback name passed")
+        return
+    elseif not callbacktypes[name] then
+        luamcallbacks.error(
+          format("unable to remove function, '%s' is not a valid callback",
+          name))
+        return
+    end
+    if not description or description == "" then
+        luamcallbacks.error(
+          format("unable to remove function from '%s', no proper description passed",
+          name))
+        return
+    end
+    local l = luamcallbacks.callbacklist[name]
+    if not l then
+        luamcallbacks.error(format("no callback list for '%s'",name))
+        return
+    end
+    for k,v in ipairs(l) do
+        if v.description == description then
+            table.remove(l,k)
+            luamcallbacks.log(
+              format("removing function '%s' from '%s'",description,name))
+            return
+        end
+    end
+    if l == {} then
+        luamcallbacks.internalregister(name, nil)
+    end
+    luamcallbacks.error(
+      format("unable to remove function '%s' from '%s'",description,name))
+end
+
+%    \end{macrocode}
+%
+% \end{macro}
+%
+% \begin{macro}{luamcallbacks.reset}
+%
+% This function removes all the functions registered in a callback.
+%
+%    \begin{macrocode}
+
+function luamcallbacks.reset (name)
+    if not name or name == "" then
+        luamcallbacks.error("unable to reset, no proper callback name passed")
+        return
+    elseif not callbacktypes[name] then
+        luamcallbacks.error(
+          format("reset error, '%s' is not a valid callback", 
+          name))
+        return
+    end
+    luamcallbacks.internalregister(name, nil)
+    local l = luamcallbacks.callbacklist[name]
+    if not l then
+        luamcallbacks.error(format("no function registered for callback '%s'",name))
+    else
+        luamcallbacks.log(format("resetting callback list '%s'",name))
+        luamcallbacks.callbacklist[name] = { }
+    end
+end
+
+%    \end{macrocode}
+%
+% \end{macro}
+%
+%  This function and the following ones are only internal. This one is the handler for the first type of callbacks: the ones that take a list head and return true, false, or a new list head.
+%
+% \begin{macro}{luamcallbacks.listhandler}
+%
+%    \begin{macrocode}
+
+function luamcallbacks.listhandler (name)
+    return function(head,...)
+        local l = luamcallbacks.callbacklist[name]
+        if l then
+            local done = true
+            for _, f in ipairs(l) do
+                -- the returned value can be either true or a new head plus true
+                rtv1, rtv2 = f.func(head,...)
+                if type(rtv1) == 'boolean' then
+                    done = rtv1
+                elseif type (rtv1) == 'userdata' then
+                    head = rtv1
+                end
+                if type(rtv2) == 'boolean'  then
+                    done = rtv2
+                elseif type(rtv2) == 'userdata' then
+                    head = rtv2
+                end
+                if done == false then
+                    luamcallbacks.error(format(
+                      "function \"%s\" returned false in callback '%s'", 
+                      f.description, name))
+                end
+            end
+            return head, done
+        else
+            return head, false
+        end
+    end
+end
+
+%    \end{macrocode}
+%
+% \end{macro}
+%
+%  The handler for callbacks taking datas and returning modified ones.
+%
+% \begin{macro}{luamcallbacks.datahandler}
+%
+%    \begin{macrocode}
+
+function luamcallbacks.datahandler (name)
+    return function(data,...)
+        local l = luamcallbacks.callbacklist[name]
+        if l then
+            for _, f in ipairs(l) do
+                data = f.func(data,...)
+            end
+        end
+        return data
+    end
+end
+
+%    \end{macrocode}
+%
+% \end{macro}
+%
+%  This function is for the handlers that don't support more than one functions in them. In this case we only call the first function of the list.
+%
+% \begin{macro}{luamcallbacks.readerhandler}
+%
+%    \begin{macrocode}
+
+function luamcallbacks.readerhandler (name)
+    return function(filename)
+        local l = luamcallbacks.callbacklist[name]
+        if l then
+            f = l[1].func
+            return f(filename)
+        else
+            return nil, false
+        end
+    end
+end
+
+%    \end{macrocode}
+%
+% \end{macro}
+%
+%  Handler for simple functions that don't return anything.
+%
+% \begin{macro}{luamcallbacks.simplehandler}
+%
+%    \begin{macrocode}
+
+function luamcallbacks.simplehandler (name)
+    return function(...)
+        local l = luamcallbacks.callbacklist[name]
+        if l then
+            for _, f in ipairs(l) do
+                f.func(...)
+            end
+        end
+    end
+end
+
+%    \end{macrocode}
+%
+% \end{macro}
+%
+% Finally we add some functions to the \texttt{callback} module, and we overwrite \texttt{callback.register} so that it outputs an error.
+%
+%    \begin{macrocode}
+
+callback.add = luamcallbacks.add
+callback.remove = luamcallbacks.remove
+callback.reset = luamcallbacks.reset
+
+callback.register = function (...)
+luamcallbacks.error("function callback.register has been deleted by luamcallbacks, please use callback.add instead.")
+end
+
+%    \end{macrocode}
+%
+% \iffalse
+%</lua>
+% \fi
+%
+% \iffalse
+%<*test>
+% \fi
+%
+% \section{Test file}
+%
+% The test file is made to run in plainTeX, but is trivial to adapt for LaTeX.
+% First we input the package, and we typeset a small sentence to get a non-empty
+% document.
+%
+%    \begin{macrocode}
+\input luatextra.sty
+
+This is just a test file.
+%    \end{macrocode}
+%
+% Then we declare three functions that we will use.
+%
+%    \begin{macrocode}
+\luadirect{
+local function one(head,...)
+    texio.write_nl("I'm number 1")
+    return head, true
+end
+
+local function two(head,...)
+    texio.write_nl("I'm number 2")
+    return head, true
+end
+
+local function three(head,...)
+    texio.write_nl("I'm number 3")
+    return head, true
+end
+%    \end{macrocode}
+%
+% Then we add the three functions to the hpack\_filter callback
+%
+%    \begin{macrocode}
+callback.add("hpack_filter",one,"my example function one",1)
+callback.add("hpack_filter",two,"my example function two",2)
+callback.add("hpack_filter",three,"my example function three",1)
+%    \end{macrocode}
+%
+% We remove the function three from the callback.
+%
+%    \begin{macrocode}
+callback.remove("hpack_filter","my example function three")
+%    \end{macrocode}
+%
+% And we remove a non-declared function to the callback, which will generate an
+% error.
+%
+%    \begin{macrocode}
+}
+
+\bye
+%    \end{macrocode}
+% \iffalse
+%</test>
+% \fi
+% \Finale
+\endinput
