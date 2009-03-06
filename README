@@ -1,0 +1,6 @@
+Here is a (temporary) git repository for LuaLaTeX files. It contains (or will contain) the following packages:
+
+luatextra : the equivalent of xltxtra for LuaTeX.
+luamcallbacks: only one lua file, automatically loaded by luatextra, to be able to register several functions in a callback.
+luamplib: simple package to typeset metapost directly in TeX with LuaTeX's mplib.
+luainputenc: package with two functions: making LaTeX's inputenc work, and conversion from and two a lot of encodings.
