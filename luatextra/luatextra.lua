@@ -64,6 +64,13 @@ function luatextra.module_log(modulename, msg)
     texio.write_nl('log', format("%s: %s", modulename, msg))
 end
 
+function luatextra.module_term(modulename, msg)
+    if not modulename or not msg then
+        return
+    end
+    texio.write_nl('term', format("%s: %s", modulename, msg))
+end
+
 function luatextra.module_info(modulename, msg)
     if not modulename or not msg then
         return
@@ -78,6 +85,9 @@ function luatextra.find_module_file(name)
     path = kpse.find_file(name)
     return path, name
 end
+
+-- If I don't do this, module become a table instead of a function after its first call, which I don't understand...
+luatextra.module = module
 
 function luatextra.use_module(name)
     if not name or luatextra.modules[name] then
@@ -96,7 +106,7 @@ function luatextra.use_module(name)
             luatextra.internal_warning(format("You have requested module `%s',\n%s but the file %s does not provide it.", name, luatextra.internal_warning_spaces, filename))
         end
         if not package.loaded[name] then
-            module(name, package.seeall)
+            luatextra.module(name, package.seeall)
         end
         texio.write(')')
     end
@@ -150,29 +160,29 @@ function luatextra.require_module(name, version)
     end
 end
 
-function luatextra.provides_module(module)
-    if not module then
+function luatextra.provides_module(mod)
+    if not mod then
         luatextra.internal_error('cannot provide nil module')
         return
     end
-    if not module.version or not module.name or not module.date or not module.description then
+    if not mod.version or not mod.name or not mod.date or not mod.description then
         luatextra.internal_error('invalid module registered, fields name, version, date and description are mandatory')
         return
     end
-    requiredversion = luatextra.requiredversions[module.name]
+    requiredversion = luatextra.requiredversions[mod.name]
     if requiredversion then
-        if requiredversion.type == date and requiredversion.version > luatextra.datetonumber(module.date) then
-            luatextra.internal_error(format("loading module %s in version %s, but version %s was required", module.name, module.date, requiredversion.orig))
-        elseif requiredversion.type == number and requiredversion.version > module.version then
-            luatextra.internal_error(format("loading module %s in version %.02f, but version %s was required", module.name, module.version, requiredversion.orig))
+        if requiredversion.type == date and requiredversion.version > luatextra.datetonumber(mod.date) then
+            luatextra.internal_error(format("loading module %s in version %s, but version %s was required", mod.name, mod.date, requiredversion.orig))
+        elseif requiredversion.type == number and requiredversion.version > mod.version then
+            luatextra.internal_error(format("loading module %s in version %.02f, but version %s was required", mod.name, mod.version, requiredversion.orig))
         end
     end
-    luatextra.modules[module.name] = module
-    texio.write_nl('log', format("Lua module: %s %s v%.02f %s\n", module.name, module.date, module.version, module.description))
+    luatextra.modules[mod.name] = module
+    texio.write_nl('log', format("Lua module: %s %s v%.02f %s\n", mod.name, mod.date, mod.version, mod.description))
 end
 
-function luatextra.kpse_module_loader(module)
-  local script = module .. ".lua"
+function luatextra.kpse_module_loader(mod)
+  local script = mod .. ".lua"
   local file = kpse.find_file(script, "texmfscripts")
   if file then
     local loader, error = loadfile(file)
