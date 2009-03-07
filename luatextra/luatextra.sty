@@ -1,43 +1,40 @@
+
+% Loading:
 \expandafter\ifx\csname ProvidesPackage\endcsname\relax
-\expandafter\ifx\csname ifluatex\endcsname\relax
-\input ifluatex.sty
-\fi
+% Plain:
+  \expandafter\ifx\csname ifluatex\endcsname\relax
+    \input ifluatex.sty
+  \fi
+  \ifluatex\else 
+    \immediate\write16{}
+    \errmessage{Package luatextra Error: This package must be used with LuaTeX}
+  \fi
+  \def\luaRequireModule#1#2{\luadirect{luatextra.require_module([[#1]], [[#2]])}}
 \else
-\@ifpackageloaded{ifluatex}{}{\RequirePackage{ifluatex}}
-\fi
-
-\expandafter\ifx\csname ProvidesPackage\endcsname\relax
-\ifluatex\else 
-\immediate\write16{}
-\errmessage{Package luatextra Error: This package must be used with LuaTeX.}
-\fi
-\def\luaRequireModule#1#2{\luadirect{luatextra.require_module([[#1]], [[#2]])}}
-
-\else
-
-\ifluatex\else 
-\PackageError{luatextra}{This package must be used with LuaTeX.}
-\fi
-\NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{luatextra}%
-  [2009/02/26 v0.9 LuaTeX extra low-level macros]
-\@ifpackageloaded{environ}{}{\RequirePackage{environ}}
-\NewEnviron{luacode}{\luadirect{\BODY}}
-\newcommand\luaRequireModule[2][0]{\luadirect{luatextra.require_module([[#2]], [[#1]])}}
-
+% LaTeX:
+  \RequirePackage{ifluatex}
+  \ifluatex\else 
+    \PackageError{luatextra}{This package must be used with LuaTeX.}
+  \fi
+  \NeedsTeXFormat{LaTeX2e}
+  \ProvidesPackage{luatextra}
+    [2009/02/26 v0.9 LuaTeX extra low-level macros]
+  \RequirePackage{environ}
+  \NewEnviron{luacode}{\luadirect{\BODY}}
+  \newcommand\luaRequireModule[2][0]{\luadirect{luatextra.require_module([[#2]], [[#1]])}}
 \fi
 
 \def\LuaTeX{Lua\TeX }
 \def\LuaLaTeX{Lua\LaTeX }
 
 \ifnum\luatexversion<40 
-\def\directlua{\primitive\directlua0}
-\def\latelua{\primitive\latelua0}
-\def\luadirect{\primitive\directlua0}
-\def\lualate{\primitive\latelua0}
+  \def\directlua{\primitive\directlua0}
+  \def\latelua{\primitive\latelua0}
+  \def\luadirect{\primitive\directlua0}
+  \def\lualate{\primitive\latelua0}
 \else
-\def\luadirect{\primitive\directlua}
-\def\lualate{\primitive\latelua}
+  \def\luadirect{\primitive\directlua}
+  \def\lualate{\primitive\latelua}
 \fi
 \def\luaattribute{\primitive\attribute}
 \def\luaattributedef{\attributedef}
@@ -53,13 +50,13 @@
 
 \luadirect{dofile(kpse.find_file("luatextra.lua"))}
 
-\def\luaModuleError#1#2{
-\errorcontextlines=-1%
-\immediate\write16{}%
-\errmessage{Module #1 error: #2^^J^^J%
-See the module #1 documentation for explanation.
-Type \space H <return> \space for immediate help.^^J ...^^J%
-}%
+\def\luaModuleError#1#2{%
+  \errorcontextlines=-1\relax
+  \immediate\write16{}%
+  \errmessage{Module #1 error: #2^^J^^J%
+    See the module #1 documentation for explanation.
+    Type \space H <return> \space for immediate help.^^J ...^^J%
+  }%
 }
 
 \def\luaUseModule#1{\luadirect{luatextra.use_module([[#1]])}}
@@ -70,25 +67,26 @@ Type \space H <return> \space for immediate help.^^J ...^^J%
 \luaattdefcounter = 1
 
 \def\luanewattribute#1{%
-\ifnum\luaattdefcounter<65535\relax %
-\global\advance\luaattdefcounter by 1\relax %
-\allocationnumber\luaattdefcounter %
-\ifluatex %
-\global\luaattributedef#1=\allocationnumber
-\fi %
-\wlog{\string#1=\string\attribute\the\allocationnumber}%
-\luadirect{luatextra.attributedef([[\noexpand#1]], '\number\allocationnumber')}%
-\else %
-\errmessage{No room for a new \string\attribute}%
-\fi %
+  \ifnum\luaattdefcounter<65535\relax
+    \global\advance\luaattdefcounter by 1\relax
+    \allocationnumber\luaattdefcounter
+    \ifluatex
+      \global\luaattributedef#1=\allocationnumber
+    \fi 
+    \wlog{\string#1=\string\attribute\the\allocationnumber}%
+    \luadirect{%
+      luatextra.attributedef([[\noexpand#1]], '\number\allocationnumber')}%
+  \else 
+    \errmessage{No room for a new \string\attribute}%
+  \fi
 } 
 
 \def\luasetattribute#1#2{%
-#1 = \numexpr#2\relax %
+  #1 = \numexpr#2\relax
 }
 
 \def\luaunsetattribute#1{%
-#1 = -1\relax %
+  #1 = -1\relax
 }
 
 \newcount\luacatcodetabledefcounter
@@ -96,19 +94,20 @@ Type \space H <return> \space for immediate help.^^J ...^^J%
 \luacatcodetabledefcounter = 1
 
 \def\luanewcatcodetable#1{%
-\ifnum\luacatcodetabledefcounter<1114110\relax % 0x10FFFF is maximal \chardef
-\global\advance\luacatcodetabledefcounter by 1\relax %
-\allocationnumber=\luacatcodetabledefcounter %
-\global\chardef#1=\allocationnumber %
-\luadirect{luatextra.catcodetabledef([[\noexpand#1]], '\number\allocationnumber')}%
-\wlog{\string#1=\string\catcodetable\the\allocationnumber}%
-\else %
-\errmessage{No room for a new \string\catcodetable}%
-\fi
+  \ifnum\luacatcodetabledefcounter<1114110\relax % 0x10FFFF is maximal \chardef
+    \global\advance\luacatcodetabledefcounter by 1\relax
+    \allocationnumber=\luacatcodetabledefcounter
+    \global\chardef#1=\allocationnumber
+    \luadirect{%
+      luatextra.catcodetabledef([[\noexpand#1]], '\number\allocationnumber')}%
+    \wlog{\string#1=\string\catcodetable\the\allocationnumber}%
+  \else
+    \errmessage{No room for a new \string\catcodetable}%
+  \fi
 }
 
 \expandafter\edef\csname ltxtra@AtEnd\endcsname{%
-      \catcode64 \the\catcode64\relax
+  \catcode64 \the\catcode64\relax
 }
 
 \catcode 64=11\relax
@@ -121,21 +120,20 @@ Type \space H <return> \space for immediate help.^^J ...^^J%
 \fi
 
 \def\luasetcatcoderange#1#2#3{%
-\edef\luaSCR@temp{%
-\noexpand\@tempcnta=\the\@tempcnta %
-\noexpand\@tempcntb=\the\@tempcntb %
-\noexpand\count@=\the\count@ %
-\relax %
-}%
-\@tempcnta=#1\relax %
-\@tempcntb=#2\relax %
-\count@=#3\relax %
-\loop %
-\unless\ifnum\@tempcnta>\@tempcntb %
-\catcode\@tempcnta=\count@ %
-\advance\@tempcnta by 1\relax %
-\repeat %
-\luaSCR@temp %
+  \edef\luaSCR@temp{%
+    \noexpand\@tempcnta=\the\@tempcnta
+    \noexpand\@tempcntb=\the\@tempcntb
+    \noexpand\count@=\the\count@
+    \relax
+  }%
+  \@tempcnta=#1\relax
+  \@tempcntb=#2\relax
+  \count@=#3\relax
+  \loop\unless\ifnum\@tempcnta>\@tempcntb
+    \catcode\@tempcnta=\count@
+    \advance\@tempcnta by 1\relax
+  \repeat
+  \luaSCR@temp
 }
 
 \luanewcatcodetable\CatcodeTableIniTeX
@@ -150,11 +148,11 @@ Type \space H <return> \space for immediate help.^^J ...^^J%
 
 \begingroup
   \def\@makeother#1{\catcode#1=12\relax}%
-    \@firstofone{%
-    \luacatcodetable\CatcodeTableIniTeX %
-    \begingroup %
+  \@firstofone{%
+    \luacatcodetable\CatcodeTableIniTeX
+    \begingroup
       \luasetcatcoderange{0}{8}{15}%
-      \catcode9=10 % tab
+      \catcode9=10  % tab
       \catcode11=15 %
       \catcode12=13 % form feed
       \luasetcatcoderange{14}{31}{15}%
@@ -179,7 +177,7 @@ Type \space H <return> \space for immediate help.^^J ...^^J%
     \luasavecatcodetable\CatcodeTableString
     \@makeother{32}% space
     \luasavecatcodetable\CatcodeTableOther
-    \endgroup
-    }
+  \endgroup
+}
   
 \ltxtra@AtEnd
