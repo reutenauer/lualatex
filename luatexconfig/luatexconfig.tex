@@ -9,171 +9,175 @@
 \pdfvorigin=1 true in
 \pdfpkresolution=600
 
-% Rename all LuaTeX primitives to avoid name clashes. A LaTeX package can be used to return these primitives into the user namespace is desired.
+% Rename all LuaTeX primitives to avoid name clashes. 
+% A LaTeX package can be used to return these primitives 
+% into the user namespace is desired.
+
+\catcode`\_=11
+\escapechar=-1
+
+\def\luatex_primitive#1{%
+  \showtokens{#1}%
+  \ifdefined #1
+    \expandafter \let \csname luatex_\string#1\endcsname #1%
+    \let #1 \undefined
+  \fi
+}
+ 
+\let \luatex_version      \luatexversion
+\let \luatex_revision     \luatexrevision
+\let \luatex_datestamp    \luatexdatestamp
+\let \luatex_escapestring \luaescapestring
+
+\luatex_primitive \attribute
+\luatex_primitive \attributedef
+\luatex_primitive \directlua
+\luatex_primitive \latelua
+\luatex_primitive \closelua
+\luatex_primitive \clearmarks
+\luatex_primitive \noligs
+\luatex_primitive \nokerns
+\luatex_primitive \formatname
+\luatex_primitive \scantextokens
+\luatex_primitive \catcodetable
+\luatex_primitive \initcatcodetable
+\luatex_primitive \savecatcodetable
+\luatex_primitive \suppressfontnotfounderror
+\luatex_primitive \omathcode
+\luatex_primitive \odelcode
+\luatex_primitive \omathchardef
+\luatex_primitive \omathchar
+\luatex_primitive \omathaccent
+\luatex_primitive \odelimiter
+\luatex_primitive \oradical
+\luatex_primitive \glyph
+
+\luatex_primitive \leftghost
+\luatex_primitive \rightghost
+\luatex_primitive \exhyphenchar
+\luatex_primitive \prehyphenchar
+\luatex_primitive \posthyphenchar
+\luatex_primitive \preexhyphenchar
+\luatex_primitive \postexhyphenchar
+\luatex_primitive \pagewidth 
+\luatex_primitive \pageheight 
+\luatex_primitive \charwd 
+\luatex_primitive \charht 
+\luatex_primitive \chardp 
+\luatex_primitive \charic 
+\luatex_primitive \crampeddisplaystyle 
+\luatex_primitive \crampedtextstyle 
+\luatex_primitive \crampedscriptstyle 
+\luatex_primitive \crampedscriptscriptstyle
+
+\luatex_primitive \Umathchardef
+\luatex_primitive \Umathcode
+\luatex_primitive \Udelcode
+\luatex_primitive \Umathchar
+\luatex_primitive \Umathaccent
+\luatex_primitive \Uradical
+\luatex_primitive \Umathcharnum
+\luatex_primitive \Umathcodenum
+\luatex_primitive \Udelcodenum
+\luatex_primitive \Umathbotaccent
+\luatex_primitive \Umathaccents
+\luatex_primitive \Uroot
+\luatex_primitive \Uoverdelimiter
+\luatex_primitive \Uunderdelimiter
+\luatex_primitive \Umathquad 
+\luatex_primitive \Umathaxis 
+\luatex_primitive \Umathoperatorsize 
+\luatex_primitive \Umathoverbarkern 
+\luatex_primitive \Umathoverbarrule 
+\luatex_primitive \Umathoverbarvgap 
+\luatex_primitive \Umathunderbarkern 
+\luatex_primitive \Umathunderbarrule 
+\luatex_primitive \Umathunderbarvgap 
+\luatex_primitive \Umathradicalkern 
+\luatex_primitive \Umathradicalrule 
+\luatex_primitive \Umathradicalvgap 
+\luatex_primitive \Umathradicaldegreeafter
+\luatex_primitive \Umathradicaldegreeraise
+\luatex_primitive \Umathstackvgap 
+\luatex_primitive \Umathstacknumup 
+\luatex_primitive \Umathstackdenomdown 
+\luatex_primitive \Umathfractionrule 
+\luatex_primitive \Umathfractionnumvgap 
+\luatex_primitive \Umathfractionnumup 
+\luatex_primitive \Umathfractiondenomvgap 
+\luatex_primitive \Umathfractiondenomdown 
+\luatex_primitive \Umathfractiondelsize 
+\luatex_primitive \Umathlimitabovevgap 
+\luatex_primitive \Umathlimitabovebgap 
+\luatex_primitive \Umathlimitabovekern 
+\luatex_primitive \Umathlimitbelowvgap 
+\luatex_primitive \Umathlimitbelowbgap 
+\luatex_primitive \Umathlimitbelowkern 
+\luatex_primitive \Umathoverdelimitervgap 
+\luatex_primitive \Umathoverdelimiterbgap 
+\luatex_primitive \Umathunderdelimitervgap 
+\luatex_primitive \Umathunderdelimiterbgap 
+\luatex_primitive \Umathsubshiftdrop 
+\luatex_primitive \Umathsubshiftdown 
+\luatex_primitive \Umathsupshiftdrop 
+\luatex_primitive \Umathsupshiftup 
+\luatex_primitive \Umathsubsupshiftdown 
+\luatex_primitive \Umathsubtopmax 
+\luatex_primitive \Umathsupbottommin 
+\luatex_primitive \Umathsupsubbottommax 
+\luatex_primitive \Umathsubsupvgap 
+\luatex_primitive \Umathspaceafterscript 
+\luatex_primitive \Umathconnectoroverlapmin
+\luatex_primitive \Umathbinordspacing 
+\luatex_primitive \Umathbinopspacing 
+\luatex_primitive \Umathbinbinspacing 
+\luatex_primitive \Umathbinrelspacing 
+\luatex_primitive \Umathbinopenspacing 
+\luatex_primitive \Umathbinclosespacing 
+\luatex_primitive \Umathbinpunctspacing 
+\luatex_primitive \Umathbininnerspacing
+\luatex_primitive \Umathrelordspacing 
+\luatex_primitive \Umathrelopspacing 
+\luatex_primitive \Umathrelbinspacing 
+\luatex_primitive \Umathrelrelspacing 
+\luatex_primitive \Umathrelopenspacing 
+\luatex_primitive \Umathrelclosespacing 
+\luatex_primitive \Umathrelpunctspacing 
+\luatex_primitive \Umathrelinnerspacing 
+\luatex_primitive \Umathopenordspacing 
+\luatex_primitive \Umathopenopspacing 
+\luatex_primitive \Umathopenbinspacing 
+\luatex_primitive \Umathopenrelspacing 
+\luatex_primitive \Umathopenopenspacing 
+\luatex_primitive \Umathopenclosespacing 
+\luatex_primitive \Umathopenpunctspacing 
+\luatex_primitive \Umathopeninnerspacing 
+\luatex_primitive \Umathcloseordspacing 
+\luatex_primitive \Umathcloseopspacing 
+\luatex_primitive \Umathclosebinspacing 
+\luatex_primitive \Umathcloserelspacing 
+\luatex_primitive \Umathcloseopenspacing 
+\luatex_primitive \Umathcloseclosespacing 
+\luatex_primitive \Umathclosepunctspacing 
+\luatex_primitive \Umathcloseinnerspacing 
+\luatex_primitive \Umathpunctordspacing 
+\luatex_primitive \Umathpunctopspacing 
+\luatex_primitive \Umathpunctbinspacing 
+\luatex_primitive \Umathpunctrelspacing 
+\luatex_primitive \Umathpunctopenspacing 
+\luatex_primitive \Umathpunctclosespacing 
+\luatex_primitive \Umathpunctpunctspacing 
+\luatex_primitive \Umathpunctinnerspacing 
+\luatex_primitive \Umathinnerordspacing 
+\luatex_primitive \Umathinneropspacing 
+\luatex_primitive \Umathinnerbinspacing 
+\luatex_primitive \Umathinnerrelspacing 
+\luatex_primitive \Umathinneropenspacing 
+\luatex_primitive \Umathinnerclosespacing 
+\luatex_primitive \Umathinnerpunctspacing 
+\luatex_primitive \Umathinnerinnerspacing
 
 
-\luatexversion
-\luatexrevision
-\luatexdatestamp
+\catcode`\_=8
+\escapechar=92
 
-\attribute
-\attributedef
-
-\directlua
-\latelua
-
-\luaescapestring
-\closelua
-
-\clearmarks
-\noligs
-\nokerns
-
-\formatname
-
-\scantextokens
-
-\catcodetable
-\initcatcodetable
-\savecatcodetable
-
-\suppressfontnotfounderror
-
-\omathcode
-\odelcode
-
-\omathchardef
-\omathchar
-\omathaccent
-\odelimiter
-\oradical
-
-\Umathchardef
-\Umathcode
-\Udelcode
-\Umathchar
-\Umathaccent
-\Uradical
-\Umathcharnum
-\Umathcodenum
-\Udelcodenum
-
-\Umathbotaccent
-\Umathaccents
-\Uroot
-\Uoverdelimiter
-\Uunderdelimiter
-
-\crampeddisplaystyle 
-\crampedtextstyle 
-\crampedscriptstyle 
-\crampedscriptscriptstyle 
-
-\Umathquad 
-\Umathaxis 
-
-\Umathoperatorsize 
-\Umathoverbarkern 
-\Umathoverbarrule 
-\Umathoverbarvgap 
-\Umathunderbarkern 
-\Umathunderbarrule 
-\Umathunderbarvgap 
-\Umathradicalkern 
-\Umathradicalrule 
-\Umathradicalvgap 
-
-\Umathradicaldegreebefore
-\Umathradicaldegreeafter
-\Umathradicaldegreeraise
-
-\Umathstackvgap 
-\Umathstacknumup 
-\Umathstackdenomdown 
-\Umathfractionrule 
-\Umathfractionnumvgap 
-
-
-\Umathfractionnumup 
-\Umathfractiondenomvgap 
-\Umathfractiondenomdown 
-\Umathfractiondelsize 
-\Umathlimitabovevgap 
-\Umathlimitabovebgap 
-\Umathlimitabovekern 
-\Umathlimitbelowvgap 
-\Umathlimitbelowbgap 
-\Umathlimitbelowkern 
-\Umathoverdelimitervgap 
-\Umathoverdelimiterbgap 
-\Umathunderdelimitervgap 
-\Umathunderdelimiterbgap 
-\Umathsubshiftdrop 
-\Umathsubshiftdown 
-\Umathsupshiftdrop 
-\Umathsupshiftup 
-\Umathsubsupshiftdown 
-\Umathsubtopmax 
-
-
-\Umathsupbottommin 
-\Umathsupsubbottommax 
-\Umathsubsupvgap 
-\Umathspaceafterscript 
-\Umathconnectoroverlapmin
-
-
-\Umathbinordspacing 
-\Umathbinopspacing 
-\Umathbinbinspacing 
-\Umathbinrelspacing 
-
-
-\Umathbinopenspacing 
-\Umathbinclosespacing 
-\Umathbinpunctspacing 
-\Umathbininnerspacing
-
-
-\Umathrelordspacing 
-\Umathrelopspacing 
-\Umathrelbinspacing 
-\Umathrelrelspacing 
-\Umathrelopenspacing 
-\Umathrelclosespacing 
-\Umathrelpunctspacing 
-\Umathrelinnerspacing 
-\Umathopenordspacing 
-\Umathopenopspacing 
-\Umathopenbinspacing 
-\Umathopenrelspacing 
-\Umathopenopenspacing 
-\Umathopenclosespacing 
-\Umathopenpunctspacing 
-\Umathopeninnerspacing 
-\Umathcloseordspacing 
-\Umathcloseopspacing 
-\Umathclosebinspacing 
-\Umathcloserelspacing 
-\Umathcloseopenspacing 
-
-
-\Umathcloseclosespacing 
-\Umathclosepunctspacing 
-\Umathcloseinnerspacing 
-\Umathpunctordspacing 
-\Umathpunctopspacing 
-\Umathpunctbinspacing 
-\Umathpunctrelspacing 
-\Umathpunctopenspacing 
-\Umathpunctclosespacing 
-\Umathpunctpunctspacing 
-\Umathpunctinnerspacing 
-\Umathinnerordspacing 
-\Umathinneropspacing 
-\Umathinnerbinspacing 
-\Umathinnerrelspacing 
-\Umathinneropenspacing 
-\Umathinnerclosespacing 
-\Umathinnerpunctspacing 
-\Umathinnerinnerspacing 
