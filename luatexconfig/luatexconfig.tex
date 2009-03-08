@@ -13,171 +13,170 @@
 % A LaTeX package can be used to return these primitives 
 % into the user namespace is desired.
 
-\catcode`\_=11
+\catcode`\@=11
 \escapechar=-1
 
-\def\luatex_primitive#1{%
-  \showtokens{#1}%
+\def\luatex@primitive#1{%
   \ifdefined #1
-    \expandafter \let \csname luatex_\string#1\endcsname #1%
+    \expandafter \let \csname luatex@\string#1\endcsname #1%
     \let #1 \undefined
   \fi
 }
  
-\let \luatex_version      \luatexversion
-\let \luatex_revision     \luatexrevision
-\let \luatex_datestamp    \luatexdatestamp
-\let \luatex_escapestring \luaescapestring
+\let \luatex@version      \luatexversion
+\let \luatex@revision     \luatexrevision
+\let \luatex@datestamp    \luatexdatestamp
+\let \luatex@escapestring \luaescapestring
 
-\luatex_primitive \attribute
-\luatex_primitive \attributedef
-\luatex_primitive \directlua
-\luatex_primitive \latelua
-\luatex_primitive \closelua
-\luatex_primitive \clearmarks
-\luatex_primitive \noligs
-\luatex_primitive \nokerns
-\luatex_primitive \formatname
-\luatex_primitive \scantextokens
-\luatex_primitive \catcodetable
-\luatex_primitive \initcatcodetable
-\luatex_primitive \savecatcodetable
-\luatex_primitive \suppressfontnotfounderror
-\luatex_primitive \omathcode
-\luatex_primitive \odelcode
-\luatex_primitive \omathchardef
-\luatex_primitive \omathchar
-\luatex_primitive \omathaccent
-\luatex_primitive \odelimiter
-\luatex_primitive \oradical
-\luatex_primitive \glyph
+\luatex@primitive \attribute
+\luatex@primitive \attributedef
+\luatex@primitive \directlua
+\luatex@primitive \latelua
+\luatex@primitive \closelua
+\luatex@primitive \clearmarks
+\luatex@primitive \noligs
+\luatex@primitive \nokerns
+\luatex@primitive \formatname
+\luatex@primitive \scantextokens
+\luatex@primitive \catcodetable
+\luatex@primitive \initcatcodetable
+\luatex@primitive \savecatcodetable
+\luatex@primitive \suppressfontnotfounderror
+\luatex@primitive \omathcode
+\luatex@primitive \odelcode
+\luatex@primitive \omathchardef
+\luatex@primitive \omathchar
+\luatex@primitive \omathaccent
+\luatex@primitive \odelimiter
+\luatex@primitive \oradical
+\luatex@primitive \glyph
 
-\luatex_primitive \leftghost
-\luatex_primitive \rightghost
-\luatex_primitive \exhyphenchar
-\luatex_primitive \prehyphenchar
-\luatex_primitive \posthyphenchar
-\luatex_primitive \preexhyphenchar
-\luatex_primitive \postexhyphenchar
-\luatex_primitive \pagewidth 
-\luatex_primitive \pageheight 
-\luatex_primitive \charwd 
-\luatex_primitive \charht 
-\luatex_primitive \chardp 
-\luatex_primitive \charic 
-\luatex_primitive \crampeddisplaystyle 
-\luatex_primitive \crampedtextstyle 
-\luatex_primitive \crampedscriptstyle 
-\luatex_primitive \crampedscriptscriptstyle
+\luatex@primitive \leftghost
+\luatex@primitive \rightghost
+\luatex@primitive \exhyphenchar
+\luatex@primitive \prehyphenchar
+\luatex@primitive \posthyphenchar
+\luatex@primitive \preexhyphenchar
+\luatex@primitive \postexhyphenchar
+\luatex@primitive \pagewidth 
+\luatex@primitive \pageheight 
+\luatex@primitive \charwd 
+\luatex@primitive \charht 
+\luatex@primitive \chardp 
+\luatex@primitive \charic 
+\luatex@primitive \crampeddisplaystyle 
+\luatex@primitive \crampedtextstyle 
+\luatex@primitive \crampedscriptstyle 
+\luatex@primitive \crampedscriptscriptstyle
 
-\luatex_primitive \Umathchardef
-\luatex_primitive \Umathcode
-\luatex_primitive \Udelcode
-\luatex_primitive \Umathchar
-\luatex_primitive \Umathaccent
-\luatex_primitive \Uradical
-\luatex_primitive \Umathcharnum
-\luatex_primitive \Umathcodenum
-\luatex_primitive \Udelcodenum
-\luatex_primitive \Umathbotaccent
-\luatex_primitive \Umathaccents
-\luatex_primitive \Uroot
-\luatex_primitive \Uoverdelimiter
-\luatex_primitive \Uunderdelimiter
-\luatex_primitive \Umathquad 
-\luatex_primitive \Umathaxis 
-\luatex_primitive \Umathoperatorsize 
-\luatex_primitive \Umathoverbarkern 
-\luatex_primitive \Umathoverbarrule 
-\luatex_primitive \Umathoverbarvgap 
-\luatex_primitive \Umathunderbarkern 
-\luatex_primitive \Umathunderbarrule 
-\luatex_primitive \Umathunderbarvgap 
-\luatex_primitive \Umathradicalkern 
-\luatex_primitive \Umathradicalrule 
-\luatex_primitive \Umathradicalvgap 
-\luatex_primitive \Umathradicaldegreeafter
-\luatex_primitive \Umathradicaldegreeraise
-\luatex_primitive \Umathstackvgap 
-\luatex_primitive \Umathstacknumup 
-\luatex_primitive \Umathstackdenomdown 
-\luatex_primitive \Umathfractionrule 
-\luatex_primitive \Umathfractionnumvgap 
-\luatex_primitive \Umathfractionnumup 
-\luatex_primitive \Umathfractiondenomvgap 
-\luatex_primitive \Umathfractiondenomdown 
-\luatex_primitive \Umathfractiondelsize 
-\luatex_primitive \Umathlimitabovevgap 
-\luatex_primitive \Umathlimitabovebgap 
-\luatex_primitive \Umathlimitabovekern 
-\luatex_primitive \Umathlimitbelowvgap 
-\luatex_primitive \Umathlimitbelowbgap 
-\luatex_primitive \Umathlimitbelowkern 
-\luatex_primitive \Umathoverdelimitervgap 
-\luatex_primitive \Umathoverdelimiterbgap 
-\luatex_primitive \Umathunderdelimitervgap 
-\luatex_primitive \Umathunderdelimiterbgap 
-\luatex_primitive \Umathsubshiftdrop 
-\luatex_primitive \Umathsubshiftdown 
-\luatex_primitive \Umathsupshiftdrop 
-\luatex_primitive \Umathsupshiftup 
-\luatex_primitive \Umathsubsupshiftdown 
-\luatex_primitive \Umathsubtopmax 
-\luatex_primitive \Umathsupbottommin 
-\luatex_primitive \Umathsupsubbottommax 
-\luatex_primitive \Umathsubsupvgap 
-\luatex_primitive \Umathspaceafterscript 
-\luatex_primitive \Umathconnectoroverlapmin
-\luatex_primitive \Umathbinordspacing 
-\luatex_primitive \Umathbinopspacing 
-\luatex_primitive \Umathbinbinspacing 
-\luatex_primitive \Umathbinrelspacing 
-\luatex_primitive \Umathbinopenspacing 
-\luatex_primitive \Umathbinclosespacing 
-\luatex_primitive \Umathbinpunctspacing 
-\luatex_primitive \Umathbininnerspacing
-\luatex_primitive \Umathrelordspacing 
-\luatex_primitive \Umathrelopspacing 
-\luatex_primitive \Umathrelbinspacing 
-\luatex_primitive \Umathrelrelspacing 
-\luatex_primitive \Umathrelopenspacing 
-\luatex_primitive \Umathrelclosespacing 
-\luatex_primitive \Umathrelpunctspacing 
-\luatex_primitive \Umathrelinnerspacing 
-\luatex_primitive \Umathopenordspacing 
-\luatex_primitive \Umathopenopspacing 
-\luatex_primitive \Umathopenbinspacing 
-\luatex_primitive \Umathopenrelspacing 
-\luatex_primitive \Umathopenopenspacing 
-\luatex_primitive \Umathopenclosespacing 
-\luatex_primitive \Umathopenpunctspacing 
-\luatex_primitive \Umathopeninnerspacing 
-\luatex_primitive \Umathcloseordspacing 
-\luatex_primitive \Umathcloseopspacing 
-\luatex_primitive \Umathclosebinspacing 
-\luatex_primitive \Umathcloserelspacing 
-\luatex_primitive \Umathcloseopenspacing 
-\luatex_primitive \Umathcloseclosespacing 
-\luatex_primitive \Umathclosepunctspacing 
-\luatex_primitive \Umathcloseinnerspacing 
-\luatex_primitive \Umathpunctordspacing 
-\luatex_primitive \Umathpunctopspacing 
-\luatex_primitive \Umathpunctbinspacing 
-\luatex_primitive \Umathpunctrelspacing 
-\luatex_primitive \Umathpunctopenspacing 
-\luatex_primitive \Umathpunctclosespacing 
-\luatex_primitive \Umathpunctpunctspacing 
-\luatex_primitive \Umathpunctinnerspacing 
-\luatex_primitive \Umathinnerordspacing 
-\luatex_primitive \Umathinneropspacing 
-\luatex_primitive \Umathinnerbinspacing 
-\luatex_primitive \Umathinnerrelspacing 
-\luatex_primitive \Umathinneropenspacing 
-\luatex_primitive \Umathinnerclosespacing 
-\luatex_primitive \Umathinnerpunctspacing 
-\luatex_primitive \Umathinnerinnerspacing
+\luatex@primitive \Umathchardef
+\luatex@primitive \Umathcode
+\luatex@primitive \Udelcode
+\luatex@primitive \Umathchar
+\luatex@primitive \Umathaccent
+\luatex@primitive \Uradical
+\luatex@primitive \Umathcharnum
+\luatex@primitive \Umathcodenum
+\luatex@primitive \Udelcodenum
+\luatex@primitive \Umathbotaccent
+\luatex@primitive \Umathaccents
+\luatex@primitive \Uroot
+\luatex@primitive \Uoverdelimiter
+\luatex@primitive \Uunderdelimiter
+\luatex@primitive \Umathquad 
+\luatex@primitive \Umathaxis 
+\luatex@primitive \Umathoperatorsize 
+\luatex@primitive \Umathoverbarkern 
+\luatex@primitive \Umathoverbarrule 
+\luatex@primitive \Umathoverbarvgap 
+\luatex@primitive \Umathunderbarkern 
+\luatex@primitive \Umathunderbarrule 
+\luatex@primitive \Umathunderbarvgap 
+\luatex@primitive \Umathradicalkern 
+\luatex@primitive \Umathradicalrule 
+\luatex@primitive \Umathradicalvgap 
+\luatex@primitive \Umathradicaldegreeafter
+\luatex@primitive \Umathradicaldegreeraise
+\luatex@primitive \Umathstackvgap 
+\luatex@primitive \Umathstacknumup 
+\luatex@primitive \Umathstackdenomdown 
+\luatex@primitive \Umathfractionrule 
+\luatex@primitive \Umathfractionnumvgap 
+\luatex@primitive \Umathfractionnumup 
+\luatex@primitive \Umathfractiondenomvgap 
+\luatex@primitive \Umathfractiondenomdown 
+\luatex@primitive \Umathfractiondelsize 
+\luatex@primitive \Umathlimitabovevgap 
+\luatex@primitive \Umathlimitabovebgap 
+\luatex@primitive \Umathlimitabovekern 
+\luatex@primitive \Umathlimitbelowvgap 
+\luatex@primitive \Umathlimitbelowbgap 
+\luatex@primitive \Umathlimitbelowkern 
+\luatex@primitive \Umathoverdelimitervgap 
+\luatex@primitive \Umathoverdelimiterbgap 
+\luatex@primitive \Umathunderdelimitervgap 
+\luatex@primitive \Umathunderdelimiterbgap 
+\luatex@primitive \Umathsubshiftdrop 
+\luatex@primitive \Umathsubshiftdown 
+\luatex@primitive \Umathsupshiftdrop 
+\luatex@primitive \Umathsupshiftup 
+\luatex@primitive \Umathsubsupshiftdown 
+\luatex@primitive \Umathsubtopmax 
+\luatex@primitive \Umathsupbottommin 
+\luatex@primitive \Umathsupsubbottommax 
+\luatex@primitive \Umathsubsupvgap 
+\luatex@primitive \Umathspaceafterscript 
+\luatex@primitive \Umathconnectoroverlapmin
+\luatex@primitive \Umathbinordspacing 
+\luatex@primitive \Umathbinopspacing 
+\luatex@primitive \Umathbinbinspacing 
+\luatex@primitive \Umathbinrelspacing 
+\luatex@primitive \Umathbinopenspacing 
+\luatex@primitive \Umathbinclosespacing 
+\luatex@primitive \Umathbinpunctspacing 
+\luatex@primitive \Umathbininnerspacing
+\luatex@primitive \Umathrelordspacing 
+\luatex@primitive \Umathrelopspacing 
+\luatex@primitive \Umathrelbinspacing 
+\luatex@primitive \Umathrelrelspacing 
+\luatex@primitive \Umathrelopenspacing 
+\luatex@primitive \Umathrelclosespacing 
+\luatex@primitive \Umathrelpunctspacing 
+\luatex@primitive \Umathrelinnerspacing 
+\luatex@primitive \Umathopenordspacing 
+\luatex@primitive \Umathopenopspacing 
+\luatex@primitive \Umathopenbinspacing 
+\luatex@primitive \Umathopenrelspacing 
+\luatex@primitive \Umathopenopenspacing 
+\luatex@primitive \Umathopenclosespacing 
+\luatex@primitive \Umathopenpunctspacing 
+\luatex@primitive \Umathopeninnerspacing 
+\luatex@primitive \Umathcloseordspacing 
+\luatex@primitive \Umathcloseopspacing 
+\luatex@primitive \Umathclosebinspacing 
+\luatex@primitive \Umathcloserelspacing 
+\luatex@primitive \Umathcloseopenspacing 
+\luatex@primitive \Umathcloseclosespacing 
+\luatex@primitive \Umathclosepunctspacing 
+\luatex@primitive \Umathcloseinnerspacing 
+\luatex@primitive \Umathpunctordspacing 
+\luatex@primitive \Umathpunctopspacing 
+\luatex@primitive \Umathpunctbinspacing 
+\luatex@primitive \Umathpunctrelspacing 
+\luatex@primitive \Umathpunctopenspacing 
+\luatex@primitive \Umathpunctclosespacing 
+\luatex@primitive \Umathpunctpunctspacing 
+\luatex@primitive \Umathpunctinnerspacing 
+\luatex@primitive \Umathinnerordspacing 
+\luatex@primitive \Umathinneropspacing 
+\luatex@primitive \Umathinnerbinspacing 
+\luatex@primitive \Umathinnerrelspacing 
+\luatex@primitive \Umathinneropenspacing 
+\luatex@primitive \Umathinnerclosespacing 
+\luatex@primitive \Umathinnerpunctspacing 
+\luatex@primitive \Umathinnerinnerspacing
 
 
-\catcode`\_=8
+\catcode`\@=12
 \escapechar=92
 
