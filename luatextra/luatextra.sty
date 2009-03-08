@@ -1,10 +1,15 @@
+%Loading of ifluatex first, to avoir \if errors:
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+  \expandafter\ifx\csname ifluatex\endcsname\relax
+    \input ifluatex.sty
+  \fi
+\else
+  \@ifpackageloaded{ifluatex}{}{\RequirePackage{ifluatex}}
+\fi
 
 % Loading:
 \expandafter\ifx\csname ProvidesPackage\endcsname\relax
 % Plain:
-  \expandafter\ifx\csname ifluatex\endcsname\relax
-    \input ifluatex.sty
-  \fi
   \ifluatex\else 
     \immediate\write16{}
     \errmessage{Package luatextra Error: This package must be used with LuaTeX}
@@ -12,7 +17,6 @@
   \def\luaRequireModule#1#2{\luadirect{luatextra.require_module([[#1]], [[#2]])}}
 \else
 % LaTeX:
-  \RequirePackage{ifluatex}
   \ifluatex\else 
     \PackageError{luatextra}{This package must be used with LuaTeX.}
   \fi
@@ -51,12 +55,10 @@
 \luadirect{dofile(kpse.find_file("luatextra.lua"))}
 
 \def\luaModuleError#1#2{%
-  \errorcontextlines=-1\relax
+  \errorcontextlines=0\relax
   \immediate\write16{}%
   \errmessage{Module #1 error: #2^^J^^J%
-    See the module #1 documentation for explanation.
-    Type \space H <return> \space for immediate help.^^J ...^^J%
-  }%
+See the module #1 documentation for explanation.^^J ...^^J}%
 }
 
 \def\luaUseModule#1{\luadirect{luatextra.use_module([[#1]])}}

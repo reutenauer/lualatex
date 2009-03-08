@@ -284,6 +284,14 @@ luamcallbacks.log = luamcallbacks.log or function(...)
   luatextra.module_log('luamcallbacks', format(...))
 end
 
+luamcallbacks.info = luamcallbacks.info or function(...)
+  luatextra.module_info('luamcallbacks', format(...))
+end
+
+luamcallbacks.warning = luamcallbacks.warning or function(...)
+  luatextra.module_warning('luamcallbacks', format(...))
+end
+
 luamcallbacks.error = luamcallbacks.error or function(...)
   luatextra.module_error('luamcallbacks', format(...))
 end
@@ -348,8 +356,8 @@ function luamcallbacks.add (name,func,description,priority)
     elseif priority < 1 then
         priority = 1
     end
-    if callbacktypes[name] == first and (priority ~= 1 or l ~= {}) then
-        luamcallbacks.error(format("several callbacks registered in callback '%s', only the first function will be active.", name))
+    if callbacktypes[name] == first and (priority ~= 1 or #l ~= 0) then
+        luamcallbacks.warning(format("several callbacks registered in callback '%s', only the first function will be active.", name))
     end
     table.insert(l,priority,f)
     luamcallbacks.log(
@@ -393,13 +401,13 @@ function luamcallbacks.remove (name, description)
             table.remove(l,k)
             luamcallbacks.log(
               format("removing function '%s' from '%s'",description,name))
+            if l == {} then
+                luamcallbacks.internalregister(name, nil)
+            end
             return
         end
     end
-    if l == {} then
-        luamcallbacks.internalregister(name, nil)
-    end
-    luamcallbacks.error(
+    luamcallbacks.warning(
       format("unable to remove function '%s' from '%s'",description,name))
 end
 
@@ -426,7 +434,7 @@ function luamcallbacks.reset (name)
     luamcallbacks.internalregister(name, nil)
     local l = luamcallbacks.callbacklist[name]
     if not l then
-        luamcallbacks.error(format("no function registered for callback '%s'",name))
+        luamcallbacks.info(format("trying to reset callback '%s', but no function registered",name))
     else
         luamcallbacks.log(format("resetting callback list '%s'",name))
         luamcallbacks.callbacklist[name] = { }
@@ -502,16 +510,16 @@ end
 %
 %  This function is for the handlers that don't support more than one functions in them. In this case we only call the first function of the list.
 %
-% \begin{macro}{luamcallbacks.readerhandler}
+% \begin{macro}{luamcallbacks.firsthandler}
 %
 %    \begin{macrocode}
 
-function luamcallbacks.readerhandler (name)
-    return function(filename)
+function luamcallbacks.firsthandler (name)
+    return function(...)
         local l = luamcallbacks.callbacklist[name]
         if l then
-            f = l[1].func
-            return f(filename)
+            local f = l[1].func
+            return f(...)
         else
             return nil, false
         end
