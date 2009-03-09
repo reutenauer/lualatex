@@ -1,0 +1,328 @@
+% \iffalse meta-comment
+%
+% Copyright (C) 2008-2009 by Elie Roux and Yannis Haralambous
+% <elie.roux@telecom-bretagne.eu>.
+%
+% This work is under the CC0 license.
+%
+% This Current Maintainer of this work is Elie Roux.
+%
+% This work consists of the main source file luaminimalotf.dtx
+% and the derived files
+%    luaminimalotf.sty, luaminimalotf.lua, luaminimalotf.drv and luaminimalotf.pdf.
+%
+%
+% Unpacking:
+%    tex luaminimalotf.dtx
+% 
+% Documentation:
+%    pdflatex luaminimalotf.drv
+%
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%
+%<*ignore>
+\begingroup
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: luaminimalotf 2009/03/09 v0.1 LuaTeX minimal otf support.}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+
+\preamble
+This is a generated file.
+
+Copyright (C) 2007-2009 by Yannis Haralambous
+<elie.roux@telecom-bretagne.eu>.
+
+This work is under the CC0 license.
+
+This Current Maintainer of this work is Elie Roux.
+
+This work consists of the main source file luaminimalotf.dtx
+and the derived files
+   luaminimalotf.sty, luaminimalotf.lua, luaminimalotf.drv and luaminimalotf.pdf.
+
+\endpreamble
+
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{luaminimalotf.drv}{\from{luaminimalotf.dtx}{driver}}%
+  \usedir{tex/luatex/mplib}%
+  \file{luaminimalotf.sty}{\from{luaminimalotf.dtx}{package}}%
+}
+
+% The following hacks are to generate a lua file with lua comments starting by -- instead of %%
+
+\def\MetaPrefix{-- }
+
+\def\luapostamble{%
+  \MetaPrefix^^J%
+  \MetaPrefix\space End of File `\outFileName'.%
+}
+
+\def\currentpostamble{\luapostamble}%
+
+\generate{%
+  \usedir{tex/luatex/mplib}%
+  \file{luaminimalotf.lua}{\from{luaminimalotf.dtx}{lua}}%
+}
+
+\obeyspaces
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* files into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     luaminimalotf.sty luaminimalotf.lua}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{luaminimalotf.drv}%
+  [2009/03/08 v1.01 mplib package for LuaTeX.]%
+\documentclass{ltxdoc}
+\begin{document}
+  \DocInput{luaminimalotf.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{0}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{luaminimalotf.drv}
+%
+% \title{The \textsf{luaminimalotf} package}
+% \date{2009/03/09 v0.1}
+% \author{Yannis Haralambous, Arthur Reutenauer and Elie Roux \\ \texttt{elie.roux@telecom-bretagne.eu}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% Package to provide minimal otf font support for Lua\TeX .
+% \end{abstract}
+%
+% \section{Documentation}
+%
+% This packages aims at providing a minimal support for otf fonts in Lua\TeX . Lua\TeX\ is built with the lua \texttt{fontforge} library, that can virtually open any kind of font, including otf. This package allows Lua\TeX\ to read otf fonts with this library.
+%
+% A complete support for otf fonts is something too big to be done before \TeX Live 2009 gets released, this package must be seen as a transition before a true otf support. It has extremely strong limitations: the main being it doesn't understand any otf feature, ligatures for example. Because of this, it will be useful to test some fonts or to use fonts for initials, but in no way it can be relied on as a true otf package.
+%
+% The only think this package does is making the \texttt{\string\font} primitive accept fonts with \texttt{.otf} extention.
+%
+% Another limitation is that this package (and potentially any otf support) works only in PDF mode.
+%
+% The package registers a function the \texttt{define\_font} callback. Currently this callback allows only one function registered in it, so you won't be able to use this package with another one registering a function in this callback.
+%
+% \section{Files}
+%
+% This package contains three files:
+% \begin{itemize}
+% \item \texttt{luaminimalotf.lua} containing the lua code
+% \item \texttt{luaminimalotf.sty}, a wrapper for the lua code, working for both Plain and \LaTeX
+% \end{itemize}
+%
+% \iffalse
+%<*lua>
+% \fi
+%
+% \subsection{\texttt{luaminimalotf.lua}}
+%
+% First the \texttt{luaminimalotf} module is registered as a Lua\TeX\ module, with some informations.
+%
+%    \begin{macrocode}
+
+luaminimalotf = { }
+
+luaminimalotf.module = {
+    name          = "luaminimalotf",
+    version       =  0.1,
+    date          = "2009/03/09",
+    description   = "LuaTeX minimal otf support.",
+    author        = "Yannis Haralambous & Arthur Reutenauer",
+    copyright     = "Yannis Haralambous",
+    license       = "CC0",
+}
+
+luatextra.provides_module(luaminimalotf.module)
+
+%    \end{macrocode}
+%
+% The main code. This function will be registered in the \texttt{define\_font} callback.
+%
+%    \begin{macrocode}
+
+function luaminimalotf.open_font (name, size)
+    local f
+    local fonttype = nil
+    local filename = kpse.find_file(name, 'opentype fonts')
+    if (filename) then
+      fonttype = 'opentype'
+    else 
+      filename = kpse.find_file(name, 'truetype fonts')
+    end
+    if filename and not fonttype then fonttype = 'truetype' end
+    if fonttype then
+      if (size < 0) then size = (- 655.36) * size end
+      local ttffont = fontforge.to_table(fontforge.open(filename))
+      f = { }
+      if ttffont then
+        f.name = ttffont.fontname
+        f.fullname = ttffont.names[1].names.fullname
+        f.parameters = { }
+        f.designsize = size
+        f.size = size
+        f.parameters.slant = 0
+        f.parameters.space = size * 0.25
+        f.parameters.space_stretch = 0.3 * size
+        f.parameters.space_shrink = 0.1 * size
+        f.parameters.x_height = 0.4 * size
+        f.parameters.quad = 1.0 * size
+        f.parameters.extra_space = 0
+        f.characters = { }
+        local mag = size / ttffont.units_per_em
+        local names_of_char = { }
+        for char, glyph in pairs(ttffont.map.map) do
+          names_of_char[ttffont.glyphs[glyph].name] = ttffont.map.backmap[glyph]
+        end
+        local names_of_glyph = { }
+        for char, glyph in pairs(ttffont.map.map) do
+          names_of_glyph[ttffont.glyphs[glyph].name] = glyph
+        end
+        for char, glyph in pairs(ttffont.map.map) do
+          local glyph_table = ttffont.glyphs[glyph]
+          f.characters[char] = {
+            index = glyph,
+            width = glyph_table.width * mag,
+            name = glyph_table.name,
+          }
+          if glyph_table.boundingbox[4] then
+            f.characters[char].height = glyph_table.boundingbox[4] * mag
+          end
+          if glyph_table.boundingbox[2] then
+            f.characters[char].depth = -glyph_table.boundingbox[2] * mag
+          end
+          if glyph_table.kerns then
+            local kerns = { }
+            for _, kern in pairs(glyph_table.kerns)
+            do
+              kerns[names_of_char[kern.char]] = kern.off * mag
+            end
+          f.characters[char].kerns = kerns
+          end
+        end
+        f.filename = filename
+        f.type = 'real'
+        f.format = fonttype
+        f.embedding = "subset"
+        f.cidinfo = {
+          registry = "Registry",
+          ordering = "Identity",
+          supplement = 0,
+          version = 1
+        }
+      end
+    else
+      f = font.read_tfm(name, size)
+    end
+  return f
+end
+
+function luaminimalotf.add_callback()
+    callback.add('define_font', luaminimalotf.open_font, 'luaminimalotf.open_font')
+end
+
+%    \end{macrocode}
+%
+% \iffalse
+%</lua>
+% \fi
+%
+% \subsection{\texttt{luaminimalotf.sty}}
+%
+% \iffalse
+%<*package>
+% \fi
+%
+% The file just checks the pdf mode, registers the package and calls the lua code.
+%
+%    \begin{macrocode}
+
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+\expandafter\ifx\csname luaUseModule\endcsname\relax
+\input luatextra.sty
+\fi
+\else
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{luaminimalotf}%
+  [2009/03/09 v0.1 LuaTeX minimal otf support]
+\@ifpackageloaded{luatextra}{}{\RequirePackage{luatextra}}
+\fi
+
+\luaUseModule{luaminimalotf}
+
+\ifnum\pdfoutput<1
+  \expandafter\ifx\csname PackageWarning\endcsname\relax
+    \write16{}
+    \write16{Warning: luaminimalotf only works in PDF mode, otf fonts won't work.}
+    \write16{}
+  \else
+    \PackageWarning{luaminimalotf}{luaminimalotf only works in PDF mode, otf fonts won't work.}
+  \fi
+\fi
+
+\luadirect{luaminimalotf.add_callback()}
+
+%    \end{macrocode}
+%
+% \iffalse
+%</package>
+% \fi
+%
+% \subsection{\texttt{create-mem.lua}}
+%
+% Finally a small standalone file to call with \texttt{texlua} that generates \texttt{luatex-plain.mem} in the current directory. To generate other formats in other names, simply change the last line. After the \texttt{mem} generation, you'll have to install it in a directory searchable by \TeX .
+%
+% \Finale
+\endinput
