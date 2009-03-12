@@ -193,80 +193,208 @@ luatextra.provides_module(luaminimalotf.module)
 %
 %    \begin{macrocode}
 
-function luaminimalotf.open_font (name, size)
-    local f
-    local fonttype = nil
-    local filename = kpse.find_file(name, 'opentype fonts')
-    if (filename) then
-      fonttype = 'opentype'
-    else 
-      filename = kpse.find_file(name, 'truetype fonts')
-    end
-    if filename and not fonttype then fonttype = 'truetype' end
-    if fonttype then
-      if (size < 0) then size = (- 655.36) * size end
-      local ttffont = fontforge.to_table(fontforge.open(filename))
-      f = { }
-      if ttffont then
-        f.name = ttffont.fontname
-        f.fullname = ttffont.names[1].names.fullname
-        f.parameters = { }
-        f.designsize = size
-        f.size = size
-        f.parameters.slant = 0
-        f.parameters.space = size * 0.25
-        f.parameters.space_stretch = 0.3 * size
-        f.parameters.space_shrink = 0.1 * size
-        f.parameters.x_height = 0.4 * size
-        f.parameters.quad = 1.0 * size
-        f.parameters.extra_space = 0
-        f.characters = { }
-        local mag = size / ttffont.units_per_em
-        local names_of_char = { }
-        for char, glyph in pairs(ttffont.map.map) do
-          names_of_char[ttffont.glyphs[glyph].name] = ttffont.map.backmap[glyph]
-        end
-        local names_of_glyph = { }
-        for char, glyph in pairs(ttffont.map.map) do
-          names_of_glyph[ttffont.glyphs[glyph].name] = glyph
-        end
-        for char, glyph in pairs(ttffont.map.map) do
-          local glyph_table = ttffont.glyphs[glyph]
-          f.characters[char] = {
-            index = glyph,
-            width = glyph_table.width * mag,
-            name = glyph_table.name,
-          }
-          if glyph_table.boundingbox[4] then
-            f.characters[char].height = glyph_table.boundingbox[4] * mag
-          end
-          if glyph_table.boundingbox[2] then
-            f.characters[char].depth = -glyph_table.boundingbox[2] * mag
-          end
-          if glyph_table.kerns then
-            local kerns = { }
-            for _, kern in pairs(glyph_table.kerns)
-            do
-              kerns[names_of_char[kern.char]] = kern.off * mag
-            end
-          f.characters[char].kerns = kerns
-          end
-        end
-        f.filename = filename
-        f.type = 'real'
-        f.format = fonttype
-        f.embedding = "subset"
-        f.cidinfo = {
-          registry = "Registry",
-          ordering = "Identity",
-          supplement = 0,
-          version = 1
-        }
-      end
+function parse_cidmap(cidmap, cidpath)
+  local decdigit = lpeg.R"09"
+  local hexdigit = decdigit + lpeg.R"af" + lpeg.R"AF"
+  local alpha = lpeg.R"az" + lpeg.R"AZ"
+  local alnum = alpha + decdigit
+  local dot = lpeg.P"."
+
+  local cidrange = lpeg.C(decdigit^1) * (lpeg.P".." * lpeg.C(decdigit^1))^-1
+  cidrange = lpeg.Ct(cidrange)
+  local usv = lpeg.Cc"usv" * lpeg.C(hexdigit^1)
+  usv = lpeg.Ct(usv)
+  local glyphname = lpeg.Cc"name" * lpeg.P"/"
+    * lpeg.C((alpha + dot) * (alnum + dot)^1)
+  glyphname = lpeg.Ct(glyphname)
+  local space = lpeg.P" " + lpeg.P"\t"
+
+  local cidpatt = cidrange * space^1 * (usv + glyphname)
+  local first_line = true
+  local cidcount
+
+  for cidline in io.lines(cidpath) do
+    if first_line then
+      cidcount = cidline:gmatch("[0-9]+")()
+      first_line = false
     else
-      f = font.read_tfm(name, size)
+      cids, codes = lpeg.match(cidpatt, cidline)
+      cid = tonumber(cids[1], 10)
+      if codes[1] == "usv" then -- else code[1] == "name"; do nothing
+        code = tonumber(codes[2], 16)
+        last_cid = tonumber(cids[2], 10)
+        if not last_cid then
+          cidmap[cid] = code
+        else
+          for n = cid, last_cid do
+            i = n - cid
+            cidmap[cid + i] = code + i
+          end
+        end
+      end
     end
-  return f
+  end
+end
+
+function find_cidmap(registry, ordering, supplement)
+  local cidmap = { }
+
+  registry = registry:lower()
+  ordering = ordering:lower()
+  local cidfile = string.format("%s-%s-%d", registry, ordering, supplement)
+  kpse.set_program_name("luatex")
+  local cidpath = kpse.find_file(string.format("%s.cidmap", cidfile))
+  if not cidpath
+  then cidpath = string.format("cidmap/%s.cidmap", cidfile)
+  end
+  parse_cidmap(cidmap, cidpath)
+  --[===[
+  for k, v in pairs(cidmap) do
+    out:write(string.format("%d\t%04x", k, v))
+    out:write("\n")
+  end
+  --]===]
+  return cidmap
+end
+
+
+function luaminimalotf.open_font (name, size)
+  local tfont, ofont = { }
+  local fonttype
+  local filename = kpse.find_file(name,"opentype fonts")
+  if filename
+  then fonttype = 'opentype'
+  else filename = kpse.find_file(name, "truetype fonts")
+  end
+  if filename and not fonttype then fonttype = 'truetype' end
+  if fonttype then
+    if size < 0 then size = -655.36 * size end
+
+    local ffont = fontforge.open(filename)
+    ofont = fontforge.to_table(ffont)
+    fontforge.close(ffont)
+    if ofont then
+      tfont.name = ofont.fontname
+      tfont.fullname = ofont.names[1].names.fullname
+      tfont.parameters = { }
+      tfont.designsize = size
+      tfont.size = size
+      direction = 0
+      tfont.parameters.slant = 0
+      tfont.parameters.space = size * 0.25
+      tfont.parameters.space_stretch = 0.3 * size
+      tfont.parameters.space_shrink = 0.1 * size
+      tfont.parameters.x_height = 0.4 * size
+      tfont.parameters.quad = 1.0 * size
+      tfont.parameters.extra_space = 0
+      tfont.characters = { }
+      local mag = size / ofont.units_per_em
+
+      local cidmap
+      local ci = ofont.cidinfo
+      if ci then
+        local reg, ord, supp = ci.registry, ci.ordering, ci.supplement
+        if reg and ord and supp then
+          if cidinfo ~= "Identity"
+	  then cidmap = find_cidmap(reg, ord, supp)
+          end
+        end
+      end
+
+      tfont.map = ofont.map
+
+      local names_of_char = { }
+      if ofont.map then
+        if ofont.map.map then
+          for char, glyph in pairs(ofont.map.map)
+          do
+            names_of_char[ofont.glyphs[glyph].name]
+              = ofont.map.backmap[glyph]
+          end
+  
+          names_of_glyph = { }
+          for char, glyph in pairs(ofont.map.map)
+          do
+            names_of_glyph[ofont.glyphs[glyph].name]
+              = glyph
+          end
+        end
+
+        tfont.map.names_of_char = names_of_char
+      end
+
+      local function tex_char_table(glyph_table, char, glyph)
+        local w = glyph_table.width
+        if not w then w = 0 end
+        w = w * mag
+        local char_table = {
+          index = glyph,
+          width = w,
+          name = glyph_table.name,
+          lookups = glyph_table.lookups
+        }
+
+        if glyph_table.boundingbox then
+          if glyph_table.boundingbox[4]
+          then char_table.height = glyph_table.boundingbox[4] * mag
+          end
+
+          if glyph_table.boundingbox[2]
+          then char_table.depth = -glyph_table.boundingbox[2] * mag end
+        end
+
+        if glyph_table.kerns then
+        local kerns = { }
+        for _, kern in pairs(glyph_table.kerns)
+        -- Dangerous!
+        do kerns[names_of_char[kern.char]] = kern.off * mag
+        end
+        char_table.kerns = kerns
+        end
+
+        return char_table
+      end
+
+      -- construct tfont.characters
+      if ofont.subfonts then
+        if cidmap then
+          for _, sf in ipairs(ofont.subfonts) do -- ipairs, really?
+            for glyph, glyph_table in pairs(sf.glyphs) do
+              if glyph_table.width then -- subfonts contain a lot of crap!
+                local char = cidmap[glyph]
+                if char then -- glyph can be 0?
+                  local char_table =
+                    tex_char_table(glyph_table, char, glyph)
+                  if char_table then tfont.characters[char] = char_table end
+                end
+              end
+            end
+          end
+        end
+      else
+        for char, glyph in pairs(ofont.map.map) do
+          glyph_table = ofont.glyphs[glyph]
+          local char_table = tex_char_table(glyph_table, char, glyph)
+          if char_table then tfont.characters[char] = char_table end
+        end
+      end
+
+      tfont.filename = filename
+      tfont.type = 'real'
+      tfont.format = fonttype
+      tfont.embedding = "subset"
+      -- Really?
+      tfont.cidinfo = {
+        registry = "Adobe",
+        ordering = "Identity",
+        supplement = 0,
+        version = 1
+      }
+    end
+  else
+    tfont = font.read_tfm(name, size)
+  end
+  return tfont
 end
 
 function luaminimalotf.add_callback()
